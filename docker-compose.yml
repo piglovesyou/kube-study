@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  my-nginx:
+    build:
+      context: ./my-nginx
+    ports:
+      - "80:80"
+
+  my-next-app:
+    build:
+      context: ./my-next-app
+    ports:
+      - "3000:3000"
