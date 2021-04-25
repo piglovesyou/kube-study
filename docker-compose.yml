@@ -4,10 +4,13 @@ services:
     build:
       context: ./my-nginx
     ports:
-      - "80:80"
+      - "8080:80"
 
   my-next-app:
     build:
       context: ./my-next-app
-    ports:
-      - "3000:3000"
+
+  my-redis:
+    image: "bitnami/redis:latest"
+    environment:
+      REDIS_PASSWORD: a
