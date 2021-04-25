@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-next-app-svc
+  labels:
+    app: my-app
+spec:
+  #  type: LoadBalancer
+  type: ClusterIP
+  ports:
+    - port: 3000
+  selector:
+    app: my-app
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels:
+    app: my-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-next-app
+          image: "piglovesyou/my-next-app"
+          env:
+            - name: REDIS_HOST
+              value: my-redis-svc
+          ports:
+            - containerPort: 3000

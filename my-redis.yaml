@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-redis-svc
+  labels:
+    app: redis
+spec:
+  clusterIP: None
+  ports:
+    - port: 6379
+  selector:
+    app: redis
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis
+spec:
+  serviceName: my-redis-svc
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: bitnami/redis:latest
+          env:
+            - name: REDIS_PASSWORD
+              value: a
+#              valueFrom:
+#                secretKeyRef:
+#                  name: redis-password
+#                  key: redis-password
+          ports:
+            - containerPort: 6379
+              name: redis-port
+          volumeMounts:
+            - name: data
+              mountPath: /bitnami/redis/data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 5Gi
